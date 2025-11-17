@@ -197,14 +197,114 @@ Comprehensive guides in `docs/european/`:
 
 ## ⚠️ CRITICAL LEGAL WARNINGS
 
-### Encryption
+### 🔴 NEW: TETRA Decryption Capabilities 🔴
 
-**NEVER attempt to decrypt encrypted communications!**
+**IMPORTANT UPDATE**: This software now includes TETRA TEA1 decryption capabilities based on publicly disclosed vulnerabilities (CVE-2022-24402).
 
-- **TETRA**: 90%+ of emergency services use TEA2/TEA3/TEA4 encryption
+**⚠️ UNAUTHORIZED DECRYPTION IS A SERIOUS CRIME ⚠️**
+
+### Legal Status of TETRA Decryption
+
+**EXTREMELY IMPORTANT**: Laws regarding encrypted communication interception are **VERY STRICT**:
+
+- **Germany**: TKG § 148, StGB § 202b - Unauthorized decryption is a criminal offense
+- **United Kingdom**: RIPA 2000 - Up to 2 years imprisonment
+- **France**: Criminal Code Article 226-15 - Up to 1 year + €45,000 fine
+- **Netherlands**: Computer Crime Act - Criminal prosecution
+- **EU-wide**: GDPR violations up to €20M or 4% global turnover
+
+**DO NOT** attempt to decrypt communications without **EXPLICIT WRITTEN AUTHORIZATION**.
+
+### What This Software Can Now Do
+
+**TEA1 Encryption (CVE-2022-24402)**:
+- ✓ Can detect TEA1 encrypted traffic
+- ✓ Can exploit known backdoor to recover keys (educational/authorized testing only)
+- ✓ Can decrypt TEA1 traffic **WITH PROPER AUTHORIZATION**
+- ⚠️ **Requires explicit user acknowledgment before first use**
+
+**TEA2/TEA3/TEA4 Encryption**:
+- ✓ Can detect encryption type
+- ✗ **CANNOT decrypt** - these algorithms remain secure
+- ✗ No known vulnerabilities
+
+### Authorization Required
+
+The TETRA decryption module will **REFUSE TO OPERATE** until:
+1. User reads comprehensive legal warnings
+2. User explicitly acknowledges legal responsibilities
+3. User confirms they have proper authorization
+4. Authorization file is created
+
+**First-time use flow**:
+```
+Launch tool → Legal Warning Display → User Acknowledgment Required →
+"I ACCEPT FULL LEGAL RESPONSIBILITY" confirmation → Authorization granted
+```
+
+### Authorized Use Cases ONLY
+
+Decryption features may **ONLY** be used for:
+- ✓ **Educational purposes** in university/training environments with simulated traffic
+- ✓ **Authorized penetration testing** with explicit written client permission
+- ✓ **Security research** on systems you own or have explicit authorization
+- ✓ **Law enforcement** with proper warrants and legal process
+
+### PROHIBITED Uses
+
+**NEVER** use decryption features to:
+- ✗ Intercept real emergency services (police, fire, ambulance, military)
+- ✗ Decrypt communications without explicit written authorization
+- ✗ Act upon intercepted information
+- ✗ Disclose intercepted communications
+- ✗ "Test" on live networks to "see if it works"
+- ✗ Monitor private or commercial TETRA systems without permission
+
+### Technical Details
+
+**TEA1 Vulnerability** (CVE-2022-24402):
+- Intentional backdoor reduces 80-bit key to effective 32 bits
+- Key recovery possible in ~1 minute on consumer laptop
+- Discovered by Midnight Blue (2023), disclosed at Black Hat/DEF CON
+- Affects primarily older commercial TETRA systems
+- **Emergency services** typically use secure TEA2/TEA3 (not vulnerable)
+
+**What Remains Secure**:
+- TEA2, TEA3, TEA4 have NO known vulnerabilities
+- UK Airwave, German BOS, Dutch C2000, etc. mostly use secure algorithms
+- Modern deployments are not affected
+
+### Documentation
+
+**MUST READ before using decryption features**:
+- **[TETRA Decryption Educational Guide](docs/european/TETRA_DECRYPTION_EDUCATIONAL.md)** - Complete guide
+  - Technical background
+  - Legal considerations by country
+  - Ethical guidelines
+  - References
+
+### Building with Decryption Support
+
+```bash
+cmake .. \
+  -DENABLE_EUROPEAN_PROTOCOLS=ON \
+  -DENABLE_TETRA=ON \
+  -DENABLE_TETRA_DECRYPTION=ON   # Enables decryption module
+
+make -j$(nproc)
+```
+
+**Without `-DENABLE_TETRA_DECRYPTION`**: Only monitoring (no decryption)
+**With `-DENABLE_TETRA_DECRYPTION`**: Full capabilities (requires authorization)
+
+---
+
+### Encryption (General)
+
+- **TETRA**: 90%+ of emergency services use TEA2/TEA3/TEA4 encryption (secure)
 - **DMR**: Commercial systems often use ARC4/AES encryption
-- **This software does NOT decrypt** - it only identifies encryption type
-- Attempting to decrypt is **ILLEGAL** in most EU countries
+- **Legacy systems**: Some commercial TETRA may still use vulnerable TEA1
+- Unauthorized decryption is **ILLEGAL** in most EU countries
 
 ### What You Can Decode
 

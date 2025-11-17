@@ -196,6 +196,103 @@ Multi-threaded design:
 - Thread 4: Audio codec decoding
 - Thread 5: Audio playback
 
+## ⚠️ TETRA Decryption Module (Educational/Pentesting Only)
+
+**NEW**: This repository now includes TETRA encryption decryption capabilities for TEA1 algorithm.
+
+### 🔴 CRITICAL LEGAL WARNING 🔴
+
+**UNAUTHORIZED USE IS ILLEGAL AND PUNISHABLE BY LAW**
+
+This module implements exploitation of **CVE-2022-24402**, the publicly disclosed intentional backdoor in TETRA TEA1 encryption discovered by Midnight Blue (2023).
+
+**Legal Penalties for Unauthorized Use:**
+- **United States**: Up to 5 years imprisonment (18 U.S.C. § 2511)
+- **United Kingdom**: Up to 2 years imprisonment (RIPA 2000)
+- **European Union**: Up to €20M or 4% global turnover (GDPR violations)
+- **Most jurisdictions**: Severe criminal penalties
+
+### ✅ Authorized Use Cases ONLY
+
+This module may **ONLY** be used for:
+- **Educational purposes** in controlled laboratory environments with simulated traffic
+- **Authorized penetration testing** with explicit written permission from system owner
+- **Security research** on systems you own or have explicit authorization to test
+- **Law enforcement** activities with proper legal authorization and warrants
+
+### ❌ Prohibited Uses
+
+**NEVER**:
+- Intercept real emergency services communications
+- Decrypt communications without explicit authorization
+- Act upon or disclose intercepted information
+- Use on production systems without written permission
+- "Test" on live networks without authorization
+
+### Technical Capabilities
+
+- **TEA1 Key Recovery**: Exploits reduced 32-bit keyspace (CVE-2022-24402)
+- **Real-time Decryption**: Decrypt TEA1 encrypted TETRA traffic
+- **Key Caching**: Store recovered keys for faster subsequent decryption
+- **TEA2/3/4 Detection**: Identifies secure encryption (cannot decrypt)
+
+**Note**: TEA2, TEA3, and TEA4 are **NOT vulnerable** and remain secure.
+
+### User Acknowledgment Required
+
+**Before first use**, the software will:
+1. Display comprehensive legal warnings
+2. Require explicit user acknowledgment
+3. Verify understanding of legal responsibilities
+4. Create authorization file only after confirmation
+
+### Documentation
+
+See comprehensive documentation for authorized users:
+- **[TETRA Decryption Educational Guide](docs/european/TETRA_DECRYPTION_EDUCATIONAL.md)** - Complete technical and legal guide
+- **[European Protocols](README_EUROPE.md)** - TETRA implementation details
+
+### Building with Decryption Support
+
+```bash
+cmake .. \
+  -DENABLE_EUROPEAN_PROTOCOLS=ON \
+  -DENABLE_TETRA=ON \
+  -DENABLE_TETRA_DECRYPTION=ON
+
+make -j$(nproc)
+```
+
+### Tools Included
+
+1. **tetra_decrypt_interceptor** - Standalone decryption tool
+   ```bash
+   # Process captured file (educational/authorized testing only)
+   tetra_decrypt_interceptor --mode file \
+     --input capture.bin --output decrypted.bin --auto-recover
+   ```
+
+2. **Integrated decryption** in main TrunkSDR program
+
+### References
+
+- **CVE-2022-24402**: TEA1 Intentional Backdoor (CVSS 9.8)
+- **Midnight Blue Research**: https://www.midnightblue.nl/research/tetraburst
+- **Disclosure**: Black Hat USA 2023, DEF CON 31, USENIX Security 2023
+
+### Disclaimer for Decryption Module
+
+**BY USING THE TETRA DECRYPTION MODULE, YOU ACKNOWLEDGE:**
+- You have read and understood all legal warnings
+- You have explicit authorization for your intended use
+- You accept full legal responsibility for your actions
+- You will comply with all applicable laws and regulations
+- The authors bear NO LIABILITY for misuse or legal consequences
+
+**IF YOU LACK PROPER AUTHORIZATION, DO NOT USE THIS MODULE.**
+
+---
+
 ## Contributing
 
 Contributions welcome! Areas of interest:
