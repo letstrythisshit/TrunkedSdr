@@ -1,0 +1,67 @@
+{
+  "system_name": "BOS (Behörden und Organisationen mit Sicherheitsaufgaben)",
+  "country": "DE",
+  "protocol": "TETRA",
+  "operator": "BDBOS (Bundesanstalt für den Digitalfunk)",
+  "frequency_band": "380-385 MHz (downlink) / 390-395 MHz (uplink)",
+  "mcc": 262,
+  "mnc": [1, 2, 3],
+  "color_codes": [1, 2],
+  "encryption": "TEA2/TEA3",
+
+  "description": "German nationwide digital radio network for authorities and organizations with security tasks. Covers Police, Fire Brigade, THW (Federal Agency for Technical Relief), Customs, and other emergency services.",
+
+  "control_channels_mhz": [
+    380.6125,
+    381.1375,
+    381.6625,
+    382.1875,
+    382.7125,
+    383.2375,
+    383.7625,
+    384.2875
+  ],
+
+  "coverage": "Nationwide Germany with over 4600 base stations",
+
+  "users": [
+    "Polizei (Police) - all federal states",
+    "Feuerwehr (Fire Brigade)",
+    "THW (Technisches Hilfswerk)",
+    "Zoll (Customs)",
+    "Katastrophenschutz (Disaster Control)",
+    "Rettungsdienst (Rescue Services)"
+  ],
+
+  "legal_warning": "German law (TKG § 148) restricts monitoring of radio communications. Consult German telecommunications law before monitoring. Educational and authorized use only.",
+
+  "network_structure": {
+    "national_coverage": "Continuous nationwide coverage",
+    "base_stations": "~4600 sites",
+    "redundancy": "High redundancy for emergency services",
+    "interoperability": "Full interoperability between all organizations"
+  },
+
+  "example_configuration": {
+    "sdr_config": {
+      "center_freq_mhz": 382.0,
+      "sample_rate": 2048000,
+      "gain": 45,
+      "ppm_correction": 0
+    },
+    "tetra_config": {
+      "expected_mcc": 262,
+      "expected_mnc": 1,
+      "color_code": 1,
+      "scan_control_channels": true
+    }
+  },
+
+  "references": [
+    "https://www.bdbos.bund.de/",
+    "BOS Digital Radio Network Documentation",
+    "German Federal Network Agency (BNetzA)"
+  ],
+
+  "notes": "One of the largest TETRA networks in Europe. Deployment completed in 2014. Extensive coverage including tunnels and remote areas."
+}

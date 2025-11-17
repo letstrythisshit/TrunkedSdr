@@ -1,0 +1,79 @@
+{
+  "system_name": "Airwave (UK Emergency Services)",
+  "country": "GB",
+  "protocol": "TETRA",
+  "frequency_band": "380-385 MHz (downlink) / 390-395 MHz (uplink)",
+  "mcc": 234,
+  "mnc": [14, 15],
+  "color_codes": [1, 2, 3],
+  "encryption": "TEA3/TEA4",
+  "encryption_note": "Almost all traffic is encrypted. Only control channels and occasional clear transmissions receivable.",
+
+  "description": "Airwave is the largest TETRA network in the world, providing nationwide coverage for UK emergency services including Police, Fire, Ambulance, and Coastguard. Operated by Motorola Solutions.",
+
+  "control_channels_mhz": [
+    382.6125,
+    382.6375,
+    382.6625,
+    382.6875,
+    383.1125,
+    383.1375,
+    383.1625,
+    383.1875,
+    383.6125,
+    383.6375
+  ],
+
+  "coverage": "Nationwide UK coverage with over 3000 base stations",
+
+  "users": [
+    "Police forces (all 43 in England and Wales)",
+    "Fire and Rescue services",
+    "Ambulance services",
+    "HM Coastguard",
+    "Border Force",
+    "British Transport Police"
+  ],
+
+  "legal_warning": "IMPORTANT: It is ILLEGAL in the UK to act upon or disclose information obtained from monitoring emergency services. While decoding control channels is technically legal, use extreme caution and consult legal advice. NEVER attempt to decrypt encrypted communications.",
+
+  "monitoring_guide": {
+    "what_you_can_decode": [
+      "System information broadcasts (MCC, MNC, location area)",
+      "Control channel signaling (call setup, not content)",
+      "Encryption indicators (TEA3/TEA4)",
+      "Talkgroup IDs (numbers only, not names)",
+      "Radio IDs",
+      "Cell site information"
+    ],
+    "what_you_cannot_decode": [
+      "Encrypted voice (vast majority of traffic)",
+      "Encrypted data messages",
+      "Location information (encrypted)",
+      "Actual call content"
+    ]
+  },
+
+  "example_configuration": {
+    "sdr_config": {
+      "center_freq_mhz": 383.0,
+      "sample_rate": 2048000,
+      "gain": 40,
+      "ppm_correction": 0
+    },
+    "tetra_config": {
+      "expected_mcc": 234,
+      "expected_mnc": 14,
+      "color_code": 1,
+      "scan_control_channels": true
+    }
+  },
+
+  "references": [
+    "https://www.airwavesolutions.co.uk/",
+    "UK Home Office - Emergency Services Network",
+    "Ofcom spectrum allocation 380-385 MHz"
+  ],
+
+  "notes": "Airwave is being replaced by the Emergency Services Network (ESN) based on 4G LTE, but will remain operational for several more years. For educational purposes only."
+}

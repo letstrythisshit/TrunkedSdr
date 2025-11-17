@@ -55,6 +55,24 @@ else()
     message(WARNING "mbelib not found - digital voice codecs will use stubs")
 endif()
 
+# European protocol options
+option(ENABLE_EUROPEAN_PROTOCOLS "Enable European digital radio protocols (TETRA, DMR, NXDN, dPMR)" ON)
+option(ENABLE_TETRA "Enable TETRA decoder" ON)
+option(ENABLE_DMR_TIER3 "Enable DMR Tier III decoder" ON)
+option(ENABLE_NXDN "Enable NXDN decoder" ON)
+option(ENABLE_DPMR "Enable dPMR decoder" ON)
+
+# Optional European-specific dependencies
+if(ENABLE_TETRA)
+    pkg_check_modules(FFTW3 fftw3f)
+    if(FFTW3_FOUND)
+        message(STATUS "Found FFTW3: ${FFTW3_LIBRARIES}")
+        add_definitions(-DHAVE_FFTW3)
+    else()
+        message(WARNING "FFTW3 not found - TETRA will use basic DSP")
+    endif()
+endif()
+
 # Include directories
 include_directories(
     ${CMAKE_SOURCE_DIR}/src
@@ -92,6 +110,42 @@ set(SOURCES
     src/utils/config_parser.cpp
 )
 
+# European protocol sources
+if(ENABLE_EUROPEAN_PROTOCOLS)
+    list(APPEND SOURCES
+        # Enhanced DSP for European protocols
+        src/dsp/fsk4_demod.cpp
+    )
+
+    if(ENABLE_TETRA)
+        list(APPEND SOURCES
+            src/dsp/dqpsk_demod.cpp
+            src/european/tetra/tetra_phy.cpp
+            src/european/tetra/tetra_decoder.cpp
+        )
+        add_definitions(-DENABLE_TETRA)
+        message(STATUS "TETRA decoder enabled")
+    endif()
+
+    if(ENABLE_DMR_TIER3)
+        list(APPEND SOURCES
+            src/european/dmr/dmr_decoder.cpp
+        )
+        add_definitions(-DENABLE_DMR_TIER3)
+        message(STATUS "DMR Tier III decoder enabled")
+    endif()
+
+    if(ENABLE_NXDN)
+        add_definitions(-DENABLE_NXDN)
+        message(STATUS "NXDN decoder enabled (framework)")
+    endif()
+
+    if(ENABLE_DPMR)
+        add_definitions(-DENABLE_DPMR)
+        message(STATUS "dPMR decoder enabled (framework)")
+    endif()
+endif()
+
 # Executable
 add_executable(trunksdr ${SOURCES})
 
@@ -111,9 +165,20 @@ if(Boost_FOUND)
     target_link_libraries(trunksdr ${Boost_LIBRARIES})
 endif()
 
+if(ENABLE_TETRA AND FFTW3_FOUND)
+    target_link_libraries(trunksdr ${FFTW3_LIBRARIES})
+    target_include_directories(trunksdr PRIVATE ${FFTW3_INCLUDE_DIRS})
+endif()
+
 # Installation
 install(TARGETS trunksdr DESTINATION bin)
 install(FILES config/config.example.json DESTINATION share/trunksdr)
+
+if(ENABLE_EUROPEAN_PROTOCOLS)
+    install(DIRECTORY config/european_systems/ DESTINATION share/trunksdr/european_systems)
+    install(DIRECTORY config/frequency_databases/ DESTINATION share/trunksdr/frequency_databases)
+    install(DIRECTORY docs/european/ DESTINATION share/doc/trunksdr/european)
+endif()
 
 # Print configuration summary
 message(STATUS "")
@@ -128,5 +193,20 @@ if(MBELIB)
     message(STATUS "  mbelib: ${MBELIB}")
 else()
     message(STATUS "  mbelib: NOT FOUND (digital voice will use stubs)")
+endif()
+if(ENABLE_EUROPEAN_PROTOCOLS)
+    message(STATUS "  European Protocols: ENABLED")
+    if(ENABLE_TETRA)
+        message(STATUS "    TETRA: ENABLED")
+    endif()
+    if(ENABLE_DMR_TIER3)
+        message(STATUS "    DMR Tier III: ENABLED")
+    endif()
+    if(ENABLE_NXDN)
+        message(STATUS "    NXDN: ENABLED (framework)")
+    endif()
+    if(ENABLE_DPMR)
+        message(STATUS "    dPMR: ENABLED (framework)")
+    endif()
 endif()
 message(STATUS "")

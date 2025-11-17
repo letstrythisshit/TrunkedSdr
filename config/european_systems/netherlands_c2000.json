@@ -1,0 +1,56 @@
+{
+  "system_name": "C2000",
+  "country": "NL",
+  "protocol": "TETRA",
+  "operator": "Ministry of Justice and Security",
+  "frequency_band": "380-385 MHz (downlink) / 390-395 MHz (uplink)",
+  "mcc": 204,
+  "mnc": [8, 9],
+  "color_codes": [1],
+
+  "description": "Dutch nationwide TETRA network for all emergency services. Name C2000 refers to 'Communicatie 2000' - the nationwide emergency services communication system.",
+
+  "control_channels_mhz": [
+    382.0875,
+    382.4625,
+    382.8375,
+    383.2125,
+    383.5875,
+    383.9625
+  ],
+
+  "coverage": "Nationwide Netherlands including water areas (North Sea coverage)",
+
+  "users": [
+    "Politie (Police)",
+    "Brandweer (Fire Brigade)",
+    "Ambulance services",
+    "Koninklijke Marechaussee (Royal Military Police)",
+    "Kustwacht (Coastguard)",
+    "Defensie (Military - limited use)"
+  ],
+
+  "legal_warning": "Dutch law permits receiving radio transmissions but prohibits acting upon or disclosing the information. Educational purposes only.",
+
+  "special_features": {
+    "water_coverage": "Extensive North Sea coverage for maritime operations",
+    "direct_mode": "DMO (Direct Mode Operation) capability for disaster scenarios",
+    "gateway": "Integration with cellular networks for wider reach"
+  },
+
+  "example_configuration": {
+    "sdr_config": {
+      "center_freq_mhz": 383.0,
+      "sample_rate": 2048000,
+      "gain": 42,
+      "ppm_correction": 0
+    },
+    "tetra_config": {
+      "expected_mcc": 204,
+      "expected_mnc": 8,
+      "color_code": 1
+    }
+  },
+
+  "notes": "Operational since 2004. One of the first nationwide TETRA emergency services networks in Europe."
+}

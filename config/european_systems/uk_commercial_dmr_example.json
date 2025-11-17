@@ -1,0 +1,95 @@
+{
+  "system_name": "Example UK DMR Tier III Network",
+  "country": "GB",
+  "protocol": "DMR Tier III",
+  "trunking_type": "Capacity Plus",
+  "frequency_band": "VHF 136-174 MHz",
+
+  "description": "Example configuration for a typical UK commercial DMR Capacity Plus system. DMR is widely used by commercial operators, utilities, and transport companies throughout Europe.",
+
+  "configuration": {
+    "rest_channel_mhz": 167.8625,
+    "voice_channels_mhz": [
+      167.8500,
+      167.8750,
+      167.9000,
+      167.9250,
+      167.9500
+    ],
+    "color_code": 1,
+    "channel_spacing_khz": 12.5,
+    "tdma_slots": 2,
+    "coverage": "Regional/City-wide"
+  },
+
+  "dmr_tier3_features": {
+    "trunking": "Capacity Plus single or multi-site",
+    "capacity": "Up to 60 talkgroups per system",
+    "slots": "2-slot TDMA (2 calls per channel)",
+    "voice_codec": "AMBE+2 (3600 bps)",
+    "data": "Short messaging, GPS, telemetry"
+  },
+
+  "typical_users": {
+    "industries": [
+      "Security companies",
+      "Event management",
+      "Construction",
+      "Warehousing/logistics",
+      "Hotels and hospitality",
+      "Facilities management"
+    ],
+    "advantages": [
+      "Cost-effective compared to TETRA",
+      "Good voice quality",
+      "Talker alias (text ID display)",
+      "GPS tracking capability",
+      "No per-call charges"
+    ]
+  },
+
+  "example_sdr_configuration": {
+    "sdr_config": {
+      "center_freq_mhz": 167.9,
+      "sample_rate": 2048000,
+      "gain": 40,
+      "ppm_correction": 0
+    },
+    "dmr_config": {
+      "protocol": "DMR_TIER3",
+      "trunking_type": "capacity_plus",
+      "rest_channel": 167862500,
+      "color_code": 1,
+      "monitor_both_slots": true
+    }
+  },
+
+  "monitoring_guide": {
+    "rest_channel": "Monitor rest channel for CSBK (Control Signaling Blocks) to detect call grants",
+    "voice_channels": "Follow grants to voice channels",
+    "talker_alias": "DMR talker alias provides text names for radios",
+    "color_code": "Must match - systems with different color codes can coexist on same frequency"
+  },
+
+  "other_european_dmr_systems": {
+    "netherlands_prorail": {
+      "description": "ProRail railway company uses DMR for train operations",
+      "frequencies": "VHF 136-174 MHz",
+      "type": "Tier III Capacity Plus"
+    },
+    "uk_utilities": {
+      "description": "Water, gas, electric companies use DMR",
+      "frequencies": "VHF and UHF",
+      "type": "Mix of Tier II and Tier III"
+    },
+    "scandinavian_commercial": {
+      "description": "Extensive DMR use in Norway, Sweden, Denmark",
+      "frequencies": "Primarily VHF",
+      "type": "Tier II and III"
+    }
+  },
+
+  "legal_note": "DMR is primarily commercial. Monitoring regulations vary by country. Generally legal to receive but illegal to disclose or act upon information. Educational purposes only.",
+
+  "notes": "DMR Tier III provides trunking similar to TETRA but at lower cost. Very popular in European commercial market. Easier to decode than TETRA due to simpler modulation (4FSK vs π/4-DQPSK)."
+}
