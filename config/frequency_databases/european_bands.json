@@ -1,0 +1,125 @@
+{
+  "european_bands": {
+    "tetra_emergency_downlink": {
+      "description": "TETRA Emergency Services Downlink (380-385 MHz)",
+      "start_freq_mhz": 380.0125,
+      "end_freq_mhz": 384.9875,
+      "channel_spacing_khz": 25.0,
+      "modulation": "PI4DQPSK",
+      "protocol": "TETRA",
+      "usage": "Police, Fire, Ambulance, Military",
+      "countries": ["UK", "DE", "FR", "NL", "BE", "ES", "IT", "PL", "SE", "NO", "DK"],
+      "license": "Emergency services only",
+      "notes": "Most transmissions are encrypted (TEA2/TEA3/TEA4)"
+    },
+    "tetra_emergency_uplink": {
+      "description": "TETRA Emergency Services Uplink (390-395 MHz)",
+      "start_freq_mhz": 390.0125,
+      "end_freq_mhz": 394.9875,
+      "channel_spacing_khz": 25.0,
+      "modulation": "PI4DQPSK",
+      "protocol": "TETRA",
+      "usage": "Emergency services uplink",
+      "duplex_spacing_mhz": 10.0,
+      "notes": "Paired with 380-385 MHz downlink"
+    },
+    "tetra_commercial_uhf1": {
+      "description": "TETRA Commercial UHF Band 1",
+      "start_freq_mhz": 410.0,
+      "end_freq_mhz": 430.0,
+      "channel_spacing_khz": 25.0,
+      "modulation": "PI4DQPSK",
+      "protocol": "TETRA",
+      "usage": "Commercial PMR, utilities, transport",
+      "countries": ["All EU"]
+    },
+    "tetra_commercial_uhf2": {
+      "description": "TETRA Commercial UHF Band 2",
+      "start_freq_mhz": 870.0,
+      "end_freq_mhz": 888.0,
+      "channel_spacing_khz": 25.0,
+      "modulation": "PI4DQPSK",
+      "protocol": "TETRA",
+      "usage": "Commercial TETRA"
+    },
+    "dmr_vhf": {
+      "description": "DMR VHF Band (136-174 MHz)",
+      "start_freq_mhz": 136.0,
+      "end_freq_mhz": 174.0,
+      "channel_spacing_khz": 12.5,
+      "modulation": "4FSK",
+      "protocol": "DMR",
+      "usage": "Commercial PMR, utilities, transport",
+      "countries": ["All EU"],
+      "notes": "Very common in Europe, 2-slot TDMA"
+    },
+    "dmr_uhf": {
+      "description": "DMR UHF Band (403-470 MHz)",
+      "start_freq_mhz": 403.0,
+      "end_freq_mhz": 470.0,
+      "channel_spacing_khz": 12.5,
+      "modulation": "4FSK",
+      "protocol": "DMR",
+      "usage": "Commercial PMR, security, events",
+      "countries": ["All EU"],
+      "notes": "Most popular DMR band in Europe"
+    },
+    "nxdn_vhf": {
+      "description": "NXDN VHF Band",
+      "start_freq_mhz": 136.0,
+      "end_freq_mhz": 174.0,
+      "channel_spacing_khz": 6.25,
+      "modulation": "4FSK",
+      "protocol": "NXDN",
+      "usage": "Utilities, transport",
+      "countries": ["UK", "DE", "NO", "SE"],
+      "notes": "6.25 kHz or 12.5 kHz channel spacing"
+    },
+    "nxdn_uhf": {
+      "description": "NXDN UHF Band",
+      "start_freq_mhz": 350.0,
+      "end_freq_mhz": 470.0,
+      "channel_spacing_khz": 6.25,
+      "modulation": "4FSK",
+      "protocol": "NXDN",
+      "usage": "Commercial PMR"
+    },
+    "dpmr_vhf": {
+      "description": "dPMR VHF Band",
+      "start_freq_mhz": 138.0,
+      "end_freq_mhz": 174.0,
+      "channel_spacing_khz": 6.25,
+      "modulation": "4FSK",
+      "protocol": "dPMR",
+      "usage": "Commercial PMR",
+      "countries": ["Eastern Europe primarily"]
+    },
+    "dpmr_uhf": {
+      "description": "dPMR UHF Band",
+      "start_freq_mhz": 403.0,
+      "end_freq_mhz": 470.0,
+      "channel_spacing_khz": 6.25,
+      "modulation": "4FSK",
+      "protocol": "dPMR",
+      "usage": "Commercial PMR"
+    },
+    "pmr446": {
+      "description": "PMR446 (License-free consumer PMR)",
+      "start_freq_mhz": 446.00625,
+      "end_freq_mhz": 446.19375,
+      "channel_spacing_khz": 6.25,
+      "channels": 16,
+      "modulation": "FM/4FSK",
+      "protocol": "Analog FM, DMR, dPMR",
+      "usage": "Consumer walkie-talkies, license-free",
+      "countries": ["All EU"],
+      "power_limit_watts": 0.5,
+      "notes": "Digital modes: channels 1-8 (DMR), 9-16 (dPMR)"
+    }
+  },
+  "channel_notes": {
+    "tetra_380_400": "Most widely used emergency services band in Europe. UK Airwave, German BOS, French ANTARES, Dutch C2000, etc. Mostly encrypted.",
+    "dmr_146_174": "Extremely common for commercial users. ProRail (NL), various utilities, transport companies.",
+    "pmr446": "Consumer-grade, can be monitored for testing/learning digital protocols without commercial traffic."
+  }
+}
