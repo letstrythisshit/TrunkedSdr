@@ -1,0 +1,31 @@
+{
+  "sdr": {
+    "device_index": 0,
+    "sample_rate": 2048000,
+    "gain": 40.0,
+    "ppm_correction": 0
+  },
+  "system": {
+    "type": "smartnet",
+    "name": "Example Motorola SmartNet System",
+    "control_channels": [
+      851012500,
+      851037500
+    ],
+    "baud_rate": 3600
+  },
+  "talkgroups": {
+    "enabled": [],
+    "labels": {
+      "1": "Talk Group 1",
+      "2": "Talk Group 2"
+    }
+  },
+  "audio": {
+    "output_device": "default",
+    "codec": "analog",
+    "sample_rate": 8000,
+    "record_calls": true,
+    "recording_path": "/home/pi/recordings"
+  }
+}

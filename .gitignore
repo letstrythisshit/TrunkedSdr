@@ -1,0 +1,73 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+Makefile
+
+# Compiled binaries
+trunksdr
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+*.txt.user
+
+# Configuration (user-specific)
+config/myconfig.json
+config/local*.json
+
+# Recordings
+recordings/
+*.wav
+*.m4a
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Core dumps
+core
+core.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+venv/
+env/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Package files
+*.deb
+*.rpm
+*.tar.gz
+*.zip
+
+# Editor temporary files
+*.kate-swp
+.*.swp
+.~lock.*

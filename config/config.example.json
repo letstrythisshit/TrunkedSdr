@@ -1,0 +1,45 @@
+{
+  "sdr": {
+    "device_index": 0,
+    "sample_rate": 2048000,
+    "gain": "auto",
+    "ppm_correction": 0,
+    "frequency_correction": 0
+  },
+  "system": {
+    "type": "p25",
+    "name": "Example P25 System",
+    "system_id": "0x001",
+    "nac": "0x293",
+    "wacn": "0xBEE00",
+    "control_channels": [
+      851012500,
+      851037500,
+      851062500
+    ],
+    "modulation": "c4fm"
+  },
+  "talkgroups": {
+    "enabled": [100, 101, 102, 200, 201, 300],
+    "priority": {
+      "100": 10,
+      "101": 9,
+      "200": 5
+    },
+    "labels": {
+      "100": "Police Dispatch",
+      "101": "Police Tactical",
+      "102": "Police Traffic",
+      "200": "Fire Dispatch",
+      "201": "Fire Tactical",
+      "300": "EMS Dispatch"
+    }
+  },
+  "audio": {
+    "output_device": "default",
+    "codec": "imbe",
+    "sample_rate": 8000,
+    "record_calls": false,
+    "recording_path": "/var/lib/trunksdr/recordings"
+  }
+}
