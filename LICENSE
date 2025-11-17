@@ -1,0 +1,137 @@
+MIT License
+
+Copyright (c) 2025 TrunkSDR Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+IMPORTANT LEGAL NOTICES:
+
+1. COMMUNICATIONS MONITORING LAWS
+
+This software is designed for monitoring of radio communications. Users are
+responsible for ensuring their use complies with all applicable laws and
+regulations, including but not limited to:
+
+- 18 U.S.C. § 2511 (United States - Interception of Communications)
+- 47 U.S.C. § 605 (United States - Unauthorized Publication)
+- Relevant state, local, and international laws
+
+Generally speaking:
+- Monitoring of public safety communications is legal in most jurisdictions
+  for personal, non-commercial use
+- Monitoring of cellular communications is ILLEGAL
+- Intercepting and disclosing private communications may be ILLEGAL
+- Using intercepted information for commercial advantage is ILLEGAL
+- Interfering with communications is ILLEGAL
+
+CONSULT A LAWYER if you are unsure about the legality of your intended use.
+
+2. CODEC PATENTS
+
+This software may interface with audio codecs that are covered by patents:
+
+- IMBE (Improved Multiband Excitation) - Digital Voice Systems, Inc.
+- AMBE (Advanced Multiband Excitation) - Digital Voice Systems, Inc.
+
+The software authors make no claims regarding patent licensing. Users are
+responsible for obtaining appropriate licenses or using alternative methods
+(hardware decoders, etc.) as needed.
+
+This software uses mbelib (https://github.com/szechyjs/mbelib) which provides
+open-source implementations of these codecs. Patent applicability may vary
+by jurisdiction and use case.
+
+3. HARDWARE COMPATIBILITY
+
+This software is designed to work with RTL-SDR and compatible devices. The
+authors are not affiliated with Realtek or RTL-SDR manufacturers. RTL-SDR
+dongles are typically sold for DVB-T reception; use for radio scanning is
+at the user's discretion.
+
+4. NO WARRANTY
+
+This software is provided AS-IS with absolutely no warranty. The authors
+assume no liability for:
+
+- Legal consequences of use
+- Equipment damage
+- Data loss
+- Interruption of service
+- Any other damages or losses
+
+5. RESPONSIBLE USE
+
+Users of this software should:
+
+- Respect privacy and communications laws
+- Use for lawful purposes only
+- Not interfere with communications
+- Not disclose sensitive intercepted information
+- Consider the ethical implications of monitoring
+
+6. EXPORT CONTROLS
+
+This software may be subject to export controls in some jurisdictions.
+Encryption and communications software may be restricted. Users are
+responsible for compliance with export laws.
+
+---
+
+THIRD-PARTY LICENSES:
+
+This software makes use of the following libraries and tools:
+
+RTL-SDR Library (GPL v2)
+- https://github.com/osmocom/rtl-sdr
+
+mbelib (ISC License)
+- https://github.com/szechyjs/mbelib
+
+PulseAudio (LGPL v2.1)
+- https://www.freedesktop.org/wiki/Software/PulseAudio/
+
+JsonCpp (MIT or Public Domain)
+- https://github.com/open-source-parsers/jsoncpp
+
+Users should review the licenses of these dependencies separately.
+
+---
+
+DISCLAIMER:
+
+THE AUTHORS AND CONTRIBUTORS OF THIS SOFTWARE:
+
+- Do NOT encourage illegal monitoring of communications
+- Do NOT provide support for illegal activities
+- Do NOT guarantee fitness for any particular purpose
+- Do NOT accept responsibility for user actions
+- STRONGLY RECOMMEND users research applicable laws before use
+
+This software is intended for:
+- Educational purposes
+- Authorized monitoring of public safety communications
+- Amateur radio experimentation
+- Authorized security research
+- Other lawful purposes
+
+By using this software, you acknowledge that you have read this license,
+understand the legal implications, and agree to use the software lawfully
+and responsibly.
