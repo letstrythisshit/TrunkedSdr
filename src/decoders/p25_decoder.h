@@ -4,6 +4,7 @@
 #include "base_decoder.h"
 #include <array>
 #include <deque>
+#include <map>
 
 namespace TrunkSDR {
 
