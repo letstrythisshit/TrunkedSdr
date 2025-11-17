@@ -58,6 +58,7 @@ endif()
 # European protocol options
 option(ENABLE_EUROPEAN_PROTOCOLS "Enable European digital radio protocols (TETRA, DMR, NXDN, dPMR)" ON)
 option(ENABLE_TETRA "Enable TETRA decoder" ON)
+option(ENABLE_TETRA_DECRYPTION "Enable TETRA TEA1 decryption (CVE-2022-24402) - Educational/Authorized Use Only" OFF)
 option(ENABLE_DMR_TIER3 "Enable DMR Tier III decoder" ON)
 option(ENABLE_NXDN "Enable NXDN decoder" ON)
 option(ENABLE_DPMR "Enable dPMR decoder" ON)
@@ -125,6 +126,16 @@ if(ENABLE_EUROPEAN_PROTOCOLS)
         )
         add_definitions(-DENABLE_TETRA)
         message(STATUS "TETRA decoder enabled")
+
+        if(ENABLE_TETRA_DECRYPTION)
+            list(APPEND SOURCES
+                src/european/tetra/tetra_crypto.cpp
+            )
+            add_definitions(-DENABLE_TETRA_DECRYPTION)
+            message(STATUS "⚠️  TETRA DECRYPTION ENABLED - Educational/Authorized Use Only")
+            message(STATUS "⚠️  WARNING: Unauthorized interception is ILLEGAL")
+            message(STATUS "⚠️  Users are SOLELY RESPONSIBLE for legal compliance")
+        endif()
     endif()
 
     if(ENABLE_DMR_TIER3)
@@ -170,6 +181,29 @@ if(ENABLE_TETRA AND FFTW3_FOUND)
     target_include_directories(trunksdr PRIVATE ${FFTW3_INCLUDE_DIRS})
 endif()
 
+# TETRA Decryption Interceptor Tool (optional standalone tool)
+if(ENABLE_TETRA_DECRYPTION)
+    add_executable(tetra_decrypt_interceptor
+        src/tools/tetra_decrypt_interceptor.cpp
+        src/european/tetra/tetra_crypto.cpp
+        src/european/tetra/tetra_phy.cpp
+        src/european/tetra/tetra_decoder.cpp
+        src/dsp/dqpsk_demod.cpp
+    )
+
+    target_link_libraries(tetra_decrypt_interceptor
+        Threads::Threads
+    )
+
+    if(FFTW3_FOUND)
+        target_link_libraries(tetra_decrypt_interceptor ${FFTW3_LIBRARIES})
+        target_include_directories(tetra_decrypt_interceptor PRIVATE ${FFTW3_INCLUDE_DIRS})
+    endif()
+
+    install(TARGETS tetra_decrypt_interceptor DESTINATION bin)
+    message(STATUS "tetra_decrypt_interceptor tool will be built")
+endif()
+
 # Installation
 install(TARGETS trunksdr DESTINATION bin)
 install(FILES config/config.example.json DESTINATION share/trunksdr)
@@ -198,6 +232,11 @@ if(ENABLE_EUROPEAN_PROTOCOLS)
     message(STATUS "  European Protocols: ENABLED")
     if(ENABLE_TETRA)
         message(STATUS "    TETRA: ENABLED")
+        if(ENABLE_TETRA_DECRYPTION)
+            message(STATUS "    TETRA Decryption: ⚠️  ENABLED (Educational/Authorized Only)")
+        else()
+            message(STATUS "    TETRA Decryption: DISABLED (monitoring only)")
+        endif()
     endif()
     if(ENABLE_DMR_TIER3)
         message(STATUS "    DMR Tier III: ENABLED")
