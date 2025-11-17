@@ -3,6 +3,9 @@
 
 #include "../../decoders/base_decoder.h"
 #include "tetra_phy.h"
+#ifdef ENABLE_TETRA_DECRYPTION
+#include "tetra_crypto.h"
+#endif
 #include <map>
 #include <set>
 
@@ -89,6 +92,21 @@ public:
     float getSignalQuality() const { return phy_layer_.getSignalQuality(); }
     size_t getCallsDecoded() const { return calls_decoded_; }
 
+#ifdef ENABLE_TETRA_DECRYPTION
+    // Decryption control (requires legal authorization)
+    bool isDecryptionEnabled() const { return decryption_enabled_; }
+    void enableDecryption(bool enable);
+
+    // Decryption statistics
+    struct DecryptionStats {
+        size_t tea1_calls_encountered;
+        size_t tea1_calls_decrypted;
+        size_t keys_recovered;
+        size_t decryption_failures;
+    };
+    DecryptionStats getDecryptionStats() const { return decryption_stats_; }
+#endif
+
 private:
     // MAC layer processing
     void processBurst(const TETRABurst& burst);
@@ -106,6 +124,13 @@ private:
 
     // Encryption detection
     EncryptionType detectEncryption(const uint8_t* data);
+
+#ifdef ENABLE_TETRA_DECRYPTION
+    // Real-time decryption
+    bool decryptVoiceFrame(uint8_t* data, size_t length, uint32_t call_id);
+    bool attemptKeyRecovery(const uint8_t* ciphertext, size_t length,
+                           uint32_t network_id, uint32_t talkgroup);
+#endif
 
     // Utility functions
     uint32_t extractBits(const uint8_t* data, size_t start, size_t count);
@@ -133,6 +158,17 @@ private:
     // Statistics
     size_t encrypted_calls_;
     size_t clear_calls_;
+
+#ifdef ENABLE_TETRA_DECRYPTION
+    // Decryption support
+    TETRACrypto crypto_;
+    bool decryption_enabled_;
+    bool decryption_authorized_;
+    DecryptionStats decryption_stats_;
+
+    // Key cache for active calls: call_id -> key
+    std::map<uint32_t, uint32_t> active_call_keys_;
+#endif
 };
 
 } // namespace European
