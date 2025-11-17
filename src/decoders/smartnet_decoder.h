@@ -14,7 +14,7 @@ constexpr size_t SMARTNET_FRAME_BITS = 76;
 constexpr uint32_t SMARTNET_SYNC = 0x5555;
 
 // SmartNet command types
-enum class SmartNetCommand : uint8_t {
+enum class SmartNetCommand : uint16_t {
     IDLE = 0x2F0,
     GROUP_CALL = 0x300,
     PRIVATE_CALL = 0x308,

@@ -3,9 +3,9 @@
 
 #include "codec_interface.h"
 
-// Forward declare mbelib structures
+// Forward declare mbelib structures (compatible with mbelib.h)
 extern "C" {
-    struct mbe_parms;
+    struct mbe_parameters;
 }
 
 namespace TrunkSDR {
