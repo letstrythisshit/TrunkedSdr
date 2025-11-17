@@ -22,7 +22,15 @@ TETRADecoder::TETRADecoder()
       has_system_info_(false),
       calls_decoded_(0),
       encrypted_calls_(0),
-      clear_calls_(0) {
+      clear_calls_(0)
+#ifdef ENABLE_TETRA_DECRYPTION
+      , decryption_enabled_(false),
+      decryption_authorized_(false)
+#endif
+{
+#ifdef ENABLE_TETRA_DECRYPTION
+    decryption_stats_ = {0, 0, 0, 0};
+#endif
 }
 
 void TETRADecoder::initialize() {
@@ -190,9 +198,48 @@ void TETRADecoder::processTCH(const uint8_t* data, size_t length) {
         // STCH - parse short data
         parseShortData(data, length);
     } else {
-        // Regular voice - would be passed to codec
-        // This is where ACELP decoder would be invoked
-        Logger::instance().debug("TETRA voice frame received");
+        // Regular voice frame
+        // Check if this voice frame is encrypted
+        EncryptionType encryption = detectEncryption(data);
+
+#ifdef ENABLE_TETRA_DECRYPTION
+        if (encryption == EncryptionType::TEA1 && decryption_enabled_ && decryption_authorized_) {
+            // Attempt real-time decryption
+            // Create mutable copy for decryption
+            std::vector<uint8_t> mutable_data(data, data + length);
+
+            // Find the call ID for this traffic channel (simplified - would track from grants)
+            uint32_t call_id = 0; // Would be determined from channel/slot tracking
+
+            if (decryptVoiceFrame(mutable_data.data(), mutable_data.size(), call_id)) {
+                Logger::instance().info("✓ TETRA voice frame decrypted in real-time");
+                // Pass decrypted data to codec decoder
+                // In full implementation: invoke ACELP decoder with mutable_data
+                decryption_stats_.tea1_calls_decrypted++;
+            } else {
+                Logger::instance().warning("✗ TETRA voice frame decryption failed");
+                decryption_stats_.decryption_failures++;
+            }
+        } else if (encryption != EncryptionType::NONE) {
+            if (encryption == EncryptionType::TEA1) {
+                Logger::instance().debug("TETRA voice frame: TEA1 encrypted (decryption not enabled)");
+            } else {
+                Logger::instance().debug("TETRA voice frame: Encrypted with secure algorithm (TEA2/3/4)");
+            }
+        } else {
+            Logger::instance().debug("TETRA voice frame: Clear (not encrypted)");
+            // Pass clear voice to codec decoder
+            // In full implementation: invoke ACELP decoder
+        }
+#else
+        // Decryption not compiled in
+        if (encryption != EncryptionType::NONE) {
+            Logger::instance().debug("TETRA voice frame: Encrypted (decryption not available)");
+        } else {
+            Logger::instance().debug("TETRA voice frame: Clear");
+            // Pass to codec decoder
+        }
+#endif
     }
 }
 
@@ -271,9 +318,30 @@ void TETRADecoder::parseCallGrant(const uint8_t* data, size_t length) {
 
     if (call.encryption != EncryptionType::NONE) {
         encrypted_calls_++;
+
+#ifdef ENABLE_TETRA_DECRYPTION
+        if (call.encryption == EncryptionType::TEA1) {
+            decryption_stats_.tea1_calls_encountered++;
+            Logger::instance().warning("TETRA Call Grant: TG=%u, Source=%u, Freq=%.4f MHz [TEA1 ENCRYPTED - VULNERABLE]",
+                           call.talkgroup, call.radio_id, call.frequency / 1e6);
+
+            // If decryption is enabled and authorized, prepare for key recovery
+            if (decryption_enabled_ && decryption_authorized_) {
+                Logger::instance().info("  → Will attempt key recovery when traffic begins");
+            } else {
+                Logger::instance().info("  → Decryption not enabled (use --enable-decryption)");
+            }
+        } else {
+            Logger::instance().warning("TETRA Call Grant: TG=%u, Source=%u, Freq=%.4f MHz [%s ENCRYPTED - SECURE]",
+                           call.talkgroup, call.radio_id, call.frequency / 1e6,
+                           (call.encryption == EncryptionType::TEA2 ? "TEA2" :
+                            call.encryption == EncryptionType::TEA3 ? "TEA3" : "TEA4"));
+        }
+#else
         Logger::instance().warning("TETRA Call Grant: TG=%u, Source=%u, Freq=%.4f MHz [ENCRYPTED %d]",
                        call.talkgroup, call.radio_id, call.frequency / 1e6,
                        static_cast<int>(call.encryption));
+#endif
     } else {
         clear_calls_++;
         Logger::instance().info("TETRA Call Grant: TG=%u, Source=%u, Freq=%.4f MHz [CLEAR]",
@@ -386,6 +454,122 @@ std::vector<TETRACall> TETRADecoder::getActiveCalls() const {
     }
     return calls;
 }
+
+#ifdef ENABLE_TETRA_DECRYPTION
+void TETRADecoder::enableDecryption(bool enable) {
+    if (enable) {
+        // Check legal authorization FIRST
+        if (!TETRACryptoLegalChecker::checkAuthorization()) {
+            Logger::instance().error("TETRA decryption authorization DENIED");
+            Logger::instance().error("Legal acknowledgment required - see documentation");
+            decryption_enabled_ = false;
+            decryption_authorized_ = false;
+            return;
+        }
+
+        Logger::instance().warning("⚠️  TETRA DECRYPTION ENABLED");
+        Logger::instance().warning("⚠️  User has acknowledged legal responsibility");
+        Logger::instance().warning("⚠️  Only TEA1 can be decrypted (CVE-2022-24402)");
+        decryption_enabled_ = true;
+        decryption_authorized_ = true;
+    } else {
+        Logger::instance().info("TETRA decryption disabled");
+        decryption_enabled_ = false;
+    }
+}
+
+bool TETRADecoder::decryptVoiceFrame(uint8_t* data, size_t length, uint32_t call_id) {
+    // Check if we have a cached key for this call
+    auto key_it = active_call_keys_.find(call_id);
+
+    if (key_it == active_call_keys_.end()) {
+        // No key cached - need to attempt key recovery
+        // Get call information
+        auto call_it = active_calls_.find(call_id);
+        if (call_it == active_calls_.end()) {
+            Logger::instance().error("Cannot decrypt: Unknown call ID %u", call_id);
+            return false;
+        }
+
+        const TETRACall& call = call_it->second;
+        uint32_t network_id = (system_info_.mcc << 16) | system_info_.mnc;
+
+        // Attempt key recovery
+        if (!attemptKeyRecovery(data, length, network_id, call.talkgroup)) {
+            return false;
+        }
+
+        // Key should now be cached
+        key_it = active_call_keys_.find(call_id);
+        if (key_it == active_call_keys_.end()) {
+            Logger::instance().error("Key recovery succeeded but key not cached (internal error)");
+            return false;
+        }
+    }
+
+    uint32_t key = key_it->second;
+
+    // Decrypt the voice frame using cached key
+    auto result = crypto_.decryptTEA1(data, length, key);
+
+    if (result.success) {
+        // Copy decrypted data back
+        memcpy(data, result.plaintext.data(), std::min(length, result.plaintext.size()));
+        return true;
+    }
+
+    return false;
+}
+
+bool TETRADecoder::attemptKeyRecovery(const uint8_t* ciphertext, size_t length,
+                                      uint32_t network_id, uint32_t talkgroup) {
+    Logger::instance().info("Attempting TEA1 key recovery (network=0x%08X, TG=%u)...",
+                           network_id, talkgroup);
+    Logger::instance().warning("This may take up to 90 seconds on Raspberry Pi");
+
+    // Check if key is already known in crypto module's cache
+    uint32_t cached_key;
+    if (crypto_.hasKnownKey(network_id, talkgroup, &cached_key)) {
+        Logger::instance().info("✓ Using cached key from previous recovery: 0x%08X", cached_key);
+
+        // Find the active call for this talkgroup
+        for (auto& call_pair : active_calls_) {
+            if (call_pair.second.talkgroup == talkgroup) {
+                active_call_keys_[call_pair.first] = cached_key;
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    // Perform key recovery (this is CPU-intensive, optimized for ARM)
+    auto key_result = crypto_.recoverTEA1Key(ciphertext, length, nullptr, 0);
+
+    if (key_result.success) {
+        Logger::instance().info("✓ Key recovered successfully!");
+        Logger::instance().info("  Key: 0x%08X", key_result.recovered_key);
+        Logger::instance().info("  Time: %.2f seconds", key_result.time_seconds);
+        Logger::instance().info("  Attempts: %llu", (unsigned long long)key_result.attempts);
+
+        // Cache the key for this network/talkgroup
+        crypto_.addKnownKey(network_id, talkgroup, key_result.recovered_key);
+
+        // Cache the key for active calls on this talkgroup
+        for (auto& call_pair : active_calls_) {
+            if (call_pair.second.talkgroup == talkgroup) {
+                active_call_keys_[call_pair.first] = key_result.recovered_key;
+            }
+        }
+
+        decryption_stats_.keys_recovered++;
+        return true;
+    } else {
+        Logger::instance().error("✗ Key recovery failed: %s", key_result.error_message.c_str());
+        return false;
+    }
+}
+#endif // ENABLE_TETRA_DECRYPTION
 
 } // namespace European
 } // namespace TrunkSDR
